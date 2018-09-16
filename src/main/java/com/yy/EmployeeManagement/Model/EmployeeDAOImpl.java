@@ -9,12 +9,13 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EmployeeDAOImpl implements EmployeeDAO{
+public class EmployeeDAOImpl implements EmployeeDAO {
 
 	private static String connectionUrl = "jdbc:sqlserver://Beangrinder.bcit.ca:1433;databaseName=jspweb;user=javastudent;password=compjava";
+
 	@Override
 	public List<Employee> getAllEmployees() {
-		List<Employee>allEmployees = new ArrayList<Employee>();
+		List<Employee> allEmployees = new ArrayList<Employee>();
 		Connection connection = null;
 		ResultSet resultSet = null;
 		Statement statement = null;
@@ -22,19 +23,19 @@ public class EmployeeDAOImpl implements EmployeeDAO{
 			System.out.println("Connecting to db...");
 			connection = DriverManager.getConnection(connectionUrl);
 			System.out.println("Done.");
-			
+
 			String getAllEmployee = "SELECT id, firstName, lastName, dob FROM [DBO].[A00911103_EMPLOYEES]";
 			statement = connection.createStatement();
 			resultSet = statement.executeQuery(getAllEmployee);
-			while(resultSet.next())
-			{
-				allEmployees.add(new Employee(resultSet.getString(1),resultSet.getString(2),resultSet.getString(3),resultSet.getDate(4)));
+			while (resultSet.next()) {
+				allEmployees.add(new Employee(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3),
+						resultSet.getDate(4)));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
 			try {
-				resultSet.close();		
+				resultSet.close();
 				statement.close();
 				connection.close();
 			} catch (SQLException e) {
@@ -52,11 +53,11 @@ public class EmployeeDAOImpl implements EmployeeDAO{
 			System.out.println("Connecting to db...");
 			connection = DriverManager.getConnection(connectionUrl);
 			System.out.println("Done.");
-			
+
 			String sql = new StringBuilder()
 					.append("INSERT INTO [DBO].[A00911103_EMPLOYEES]([ID],[firstName],[lastName],[dob])")
 					.append("VALUES(?, ?, ?, ?);").toString();
-			
+
 			try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
 				preparedStatement.setString(1, employee.getID());
 				preparedStatement.setString(2, employee.getFirstName());
@@ -64,7 +65,7 @@ public class EmployeeDAOImpl implements EmployeeDAO{
 				preparedStatement.setDate(4, employee.getDOB());
 				int rowsAffected = preparedStatement.executeUpdate();
 				System.out.println(rowsAffected + " row(s) inserted");
-			}		
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -79,39 +80,37 @@ public class EmployeeDAOImpl implements EmployeeDAO{
 
 	@Override
 	public Employee findEmployeeByID(String id) throws Exception {
-		List<Employee>employees = new ArrayList<Employee>();
+		List<Employee> employees = new ArrayList<Employee>();
 		Connection connection = null;
 		ResultSet resultSet = null;
 		try {
 			System.out.println("Connecting to db...");
 			connection = DriverManager.getConnection(connectionUrl);
 			System.out.println("Done.");
-			
+
 			String sql = new StringBuilder()
 					.append("SELECT id, firstName, lastName, dob FROM [DBO].[A00911103_EMPLOYEES] WHERE")
 					.append(" ID = ?").toString();
-			try(PreparedStatement preparedStatement = connection.prepareStatement(sql))
-			{
+			try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
 				preparedStatement.setString(1, id);
 				resultSet = preparedStatement.executeQuery();
-				while(resultSet.next())
-				{
-					employees.add(new Employee(resultSet.getString(1),resultSet.getString(2),resultSet.getString(3),resultSet.getDate(4)));
+				while (resultSet.next()) {
+					employees.add(new Employee(resultSet.getString(1), resultSet.getString(2), resultSet.getString(3),
+							resultSet.getDate(4)));
 				}
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
 			try {
-				resultSet.close();		
+				resultSet.close();
 				connection.close();
 			} catch (SQLException e) {
 
 				e.printStackTrace();
 			}
 		}
-		if (employees.size()!=1)
-		{
+		if (employees.size() != 1) {
 			throw new Exception("Found unexpected results!");
 		}
 		return employees.get(0);
@@ -124,12 +123,10 @@ public class EmployeeDAOImpl implements EmployeeDAO{
 			System.out.println("Connecting to db...");
 			connection = DriverManager.getConnection(connectionUrl);
 			System.out.println("Done.");
-			
-			String sql = new StringBuilder()
-					.append("DELETE FROM [DBO].[A00911103_EMPLOYEES] WHERE")
-					.append(" ID = ?").toString();
-			try(PreparedStatement preparedStatement = connection.prepareStatement(sql))
-			{
+
+			String sql = new StringBuilder().append("DELETE FROM [DBO].[A00911103_EMPLOYEES] WHERE").append(" ID = ?")
+					.toString();
+			try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
 				preparedStatement.setString(1, id);
 				int rowsAffected = preparedStatement.executeUpdate();
 				System.out.println(rowsAffected + " row(s) deleted");

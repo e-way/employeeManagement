@@ -3,7 +3,7 @@ package com.yy.EmployeeManagement.Model;
 import java.util.List;
 
 public class EmployeeService {
-	private final EmployeeDAO employeeDAO = new EmployeeDAOImpl();
+	private final EmployeeDAO employeeDAO = DaoFactory.getDaoFactory().getEmployeeDao();
 
 	public List<Employee> ListEmployees() {
 		return employeeDAO.getAllEmployees();
