@@ -13,7 +13,7 @@ public class Pagination {
 	public Pagination() {
 	}
 
-	public int getAllRecordNO() {
+	public int getTotalRecords() {
 		return totalRecords;
 	}
 
@@ -37,10 +37,6 @@ public class Pagination {
 	public int getTotalPages() {
 		return totalPages;
 	}
-
-//	public void setTotalPages(int totalPages) {
-//		this.totalPages = totalPages;
-//	}
 
 	public int getCurrentPageNumber() {
 		return currentPageNumber;

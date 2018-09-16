@@ -65,14 +65,14 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 				String sql = new StringBuilder()
 						.append("SELECT id, firstName, lastName, dob FROM [DBO].[A00911103_EMPLOYEES] WHERE")
 						.append(" ID = ?").toString();
-				try (PreparedStatement preparedStatement = connection.prepareStatement(sql);
-						ResultSet resultSet = preparedStatement.executeQuery()) {
+				try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
 					preparedStatement.setString(1, id);
-					while (resultSet.next()) {
-						employees.add(new Employee(resultSet.getString(1), resultSet.getString(2),
-								resultSet.getString(3), resultSet.getDate(4)));
+					try (ResultSet resultSet = preparedStatement.executeQuery()) {
+						while (resultSet.next()) {
+							employees.add(new Employee(resultSet.getString(1), resultSet.getString(2),
+									resultSet.getString(3), resultSet.getDate(4)));
+						}
 					}
-
 				}
 			}
 		} catch (Exception e) {
@@ -80,7 +80,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 		}
 
 		if (employees.size() != 1) {
-			throw new Exception("Found unexpected results!");
+			throw new EmployeeCRUDException("Found unexpected results!");
 		}
 		return employees.get(0);
 	}
@@ -121,22 +121,22 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 		return total;
 	}
 
-	
 	/*
 	 * 
-	 * select * from (select ROW_NUMBER() over (order by id desc) as rn, * from dbo.A00911103_Employees) as x where rn between 3 and 6
+	 * select * from (select ROW_NUMBER() over (order by id desc) as rn, * from
+	 * dbo.A00911103_Employees) as x where rn between 3 and 6
 	 * 
-	 * */
+	 */
 	@Override
-	public List<Employee> getEmployees(int startRows, int recordPerPage) {
+	public List<Employee> getPagedEmployees(int startRows, int recordPerPage) {
 		List<Employee> allEmployees = new ArrayList<Employee>();
 		try {
 			try (Connection connection = DriverManager.getConnection(connectionUrl)) {
-				String sql = new StringBuilder()
-						.append("SELECT id, firstName, lastName, dob FROM (SELECT ROW_NUMBER() OVER (ORDER BY id DESC) as rn, * from dbo.A00911103_Employees) as x ")
+				String sql = new StringBuilder().append(
+						"SELECT id, firstName, lastName, dob FROM (SELECT ROW_NUMBER() OVER (ORDER BY id DESC) as rn, * from dbo.A00911103_Employees) as x ")
 						.append("WHERE rn BETWEEN ? and ?").toString();
 				try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-					preparedStatement.setInt(1, startRows);
+					preparedStatement.setInt(1, startRows + 1);
 					preparedStatement.setInt(2, startRows + recordPerPage);
 					try (ResultSet resultSet = preparedStatement.executeQuery()) {
 						while (resultSet.next()) {

@@ -16,5 +16,5 @@ public interface EmployeeDAO {
 	
 	public int getEmployeesTotal();
 	
-	public List<Employee>getEmployees(int startRows, int recordsPerPage);
+	public List<Employee>getPagedEmployees(int startRows, int recordsPerPage);
 }

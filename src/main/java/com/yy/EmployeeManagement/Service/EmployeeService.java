@@ -37,7 +37,7 @@ public class EmployeeService {
 		int recordsPerPage = page.getRecordsPerPage();
 		int startRowNumber = (page.getCurrentPageNumber() - 1) * recordsPerPage;
 		
-		List<Employee> employeeList = employeeDAO.getEmployees(startRowNumber, recordsPerPage);
+		List<Employee> employeeList = employeeDAO.getPagedEmployees(startRowNumber, recordsPerPage);
 		page.setEmployeeList(employeeList);
 		
 		return page;
