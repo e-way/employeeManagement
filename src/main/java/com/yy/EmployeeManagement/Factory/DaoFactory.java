@@ -1,4 +1,4 @@
-package com.yy.EmployeeManagement.Model;
+package com.yy.EmployeeManagement.Factory;
 import com.yy.EmployeeManagement.Model.EmployeeDAO;
 import com.yy.EmployeeManagement.Model.EmployeeDAOImpl;
 

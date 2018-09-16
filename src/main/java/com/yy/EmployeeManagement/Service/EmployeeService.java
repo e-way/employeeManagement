@@ -1,6 +1,11 @@
-package com.yy.EmployeeManagement.Model;
+package com.yy.EmployeeManagement.Service;
 
 import java.util.List;
+
+import com.yy.EmployeeManagement.Domain.Employee;
+import com.yy.EmployeeManagement.Domain.Pagination;
+import com.yy.EmployeeManagement.Factory.DaoFactory;
+import com.yy.EmployeeManagement.Model.EmployeeDAO;
 
 public class EmployeeService {
 	private final EmployeeDAO employeeDAO = DaoFactory.getDaoFactory().getEmployeeDao();
@@ -19,5 +24,22 @@ public class EmployeeService {
 
 	public void DeleteEmployee(String employeeId) {
 		employeeDAO.deleteEmployee(employeeId);
+	}
+	
+	public Pagination paginate(int currentPageNumber){
+		Pagination page = new Pagination();
+		
+		page.setCurrentPageNumber(currentPageNumber);
+		
+		int totalRecords = employeeDAO.getEmployeesTotal();
+		page.setTotalPages(totalRecords);
+		
+		int recordsPerPage = page.getRecordsPerPage();
+		int startRowNumber = (page.getCurrentPageNumber() - 1) * recordsPerPage;
+		
+		List<Employee> employeeList = employeeDAO.getEmployees(startRowNumber, recordsPerPage);
+		page.setEmployeeList(employeeList);
+		
+		return page;
 	}
 }

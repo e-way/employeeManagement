@@ -1,4 +1,4 @@
-package com.yy.EmployeeManagement.Model;
+package com.yy.EmployeeManagement.Domain;
 
 import java.sql.Date;
 
