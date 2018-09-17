@@ -58,7 +58,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 	}
 
 	@Override
-	public Employee findEmployeeByID(String id) throws Exception {
+	public Employee findEmployeeByID(String id) throws EmployeeCRUDException {
 		List<Employee> employees = new ArrayList<Employee>();
 		try {
 			try (Connection connection = DriverManager.getConnection(connectionUrl)) {
@@ -78,7 +78,12 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
+        //not found employee.
+		if (employees.isEmpty())
+		{
+			return null;
+		}
+		//found more than one records.
 		if (employees.size() != 1) {
 			throw new EmployeeCRUDException("Found unexpected results!");
 		}
