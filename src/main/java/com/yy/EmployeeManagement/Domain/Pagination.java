@@ -17,7 +17,7 @@ public class Pagination {
 		return totalRecords;
 	}
 
-	public void setTotalPages(int totalRecords) {
+	public void setTotalRecords(int totalRecords) {
 		this.totalRecords = totalRecords;
 		if (this.totalRecords % this.recordsPerPage == 0) {
 			this.totalPages = this.totalRecords / this.recordsPerPage;
@@ -26,16 +26,20 @@ public class Pagination {
 		}
 	}
 
+	public int getTotalPages() {
+		return totalPages;
+	}
+
+	public void setTotalPages(int totalPages) {
+		this.totalPages = totalPages;
+	}
+
 	public int getRecordsPerPage() {
 		return recordsPerPage;
 	}
 
 	public void setRecordsPerPage(int recordsPerPage) {
 		this.recordsPerPage = recordsPerPage;
-	}
-
-	public int getTotalPages() {
-		return totalPages;
 	}
 
 	public int getCurrentPageNumber() {

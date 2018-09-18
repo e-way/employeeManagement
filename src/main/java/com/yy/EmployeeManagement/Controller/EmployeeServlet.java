@@ -7,6 +7,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.junit.runner.Request;
+
+import com.yy.EmployeeManagement.Domain.Pagination;
 import com.yy.EmployeeManagement.Service.EmployeeService;
 
 /**
@@ -29,7 +32,26 @@ public class EmployeeServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		String method = request.getParameter("method");
+		if (method != null) {
+			if (method.equals("paginate")) {
+				paginate(request, response);
+			}
+		} else {
+			paginate(request, response);
+		}
+	}
 
+	private void paginate(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		String currentPageNumber = request.getParameter("currentPageNumber");
+		if (currentPageNumber == null) {
+			currentPageNumber = "1";
+		}
+		EmployeeService service = new EmployeeService();
+		Pagination pagenation = service.paginate(Integer.valueOf(currentPageNumber));
+		request.setAttribute("pagination", pagenation);
+		request.getRequestDispatcher("/listEmployees.jsp").forward(request, response);
 	}
 
 	/**

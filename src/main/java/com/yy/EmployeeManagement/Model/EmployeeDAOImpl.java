@@ -12,6 +12,13 @@ import com.yy.EmployeeManagement.Domain.Employee;
 
 public class EmployeeDAOImpl implements EmployeeDAO {
 
+	static {
+		try {
+			Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+	}
 	private static String connectionUrl = "jdbc:sqlserver://Beangrinder.bcit.ca:1433;databaseName=jspweb;user=javastudent;password=compjava";
 
 	@Override
