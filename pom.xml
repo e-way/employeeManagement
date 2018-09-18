@@ -4,14 +4,14 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.learn.bcit</groupId>
-	<artifactId>Lab1Solution</artifactId>
+	<groupId>com.yy.EmployeeManagement</groupId>
+	<artifactId>EmployeeManagement</artifactId>
 	<packaging>war</packaging>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>Lab1Solution</name>
+	<name>EmployeeManagement</name>
 
 	<build>
-		<finalName>Lab1Solution</finalName>
+		<finalName>EmployeeManagement</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
