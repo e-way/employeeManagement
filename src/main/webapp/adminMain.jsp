@@ -3,68 +3,31 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Admin</title>
+<head>
+	<meta charset="UTF-8">
+	<title>Login</title>
+	<link rel="stylesheet" type="text/css" href="jquery-easyui-1.6.6/themes/default/easyui.css">
+	<link rel="stylesheet" type="text/css" href="jquery-easyui-1.6.6/themes/icon.css">
+	<script type="text/javascript" src="jquery-easyui-1.6.6/jquery.min.js"></script>
+	<script type="text/javascript" src="jquery-easyui-1.6.6/jquery.easyui.min.js"></script>
+</head>
 </head>
 <body>
-   <%@ taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c' %>
-    <script type="text/javascript">
-   		function pagenateHere(i){
-   			var uri = "/EmployeeManagement/EmployeeServlet?method=paginate&currentPageNumber="+i;
-   			window.location.href = uri;
-   		}
-    </script>
-  	<table border="1">
-  		<caption>Employee List</caption>
-  		<tr>
-  			<th>
-  				ID
-  			</th>
-  			<th>
-  				firstName
-  			</th>
-  			<th>
-  				lastName
-  			</th>
-  			<th>
-  				DOB
-  			</th>
-  		</tr>
-  		<c:forEach var="employee" items="${pagination.employeeList}">
-  			<tr>
-  				<td>${employee.ID}</td>
-  				<td>${employee.firstName}</td>
-  				<td>${employee.lastName}</td>
-  				<td>${employee.DOB}</td>
-  			</tr>
-  		</c:forEach>
-  		<tr>
-  			<td colspan="5" align="center">
-				<c:forEach var="i" begin="1" end="${pagination.totalPages}" step="1">
-					<a 
-						href="/EmployeeManagement/EmployeeServlet?method=paginate&currentPageNumber=${i}" 
-						style="text-decoration:none">
-						[${i}]&nbsp;&nbsp;&nbsp;
-					</a>
-				</c:forEach>
-  			</td>
-  		</tr>
-  		<tr>
-  			<td colspan="5" align="center">
-  				<select onchange="pagenateHere(this.value)">
-					<c:forEach var="i" begin="1" end="${pagination.totalPages}">
-  						<option value="${i}" ${pagination.currentPageNumber==i?'selected':''}>${i}</option>
-					</c:forEach>
-  				</select>
-  			</td>
-  		</tr>
-  		<tr>
-  			<td colspan="5" align="center">
-  				The${pagination.currentPageNumber}
-  				/Total:${pagination.totalPages}
-  				/${pagination.recordsPerPage} rows per page
-  			</td>
-  		</tr>
-  	</table>
+  <table id="tt" class="easyui-datagrid" style="width:700px;height:250px"
+			url="/EmployeeManagement/EmployeeServlet/action.do?method=paginate"
+			title="Employees" iconCls="icon-save"
+			rownumbers="true" pagination="true" data-options="pageSize:5,pageList:[5]">
+		<thead>
+			<tr>
+				<th field="id" width="80">ID</th>
+				<th field="firstName" width="120">FirstName</th>
+				<th field="lastName" width="80" align="right">LastName</th>
+				<th field="dob" width="80" align="right">DOB</th>
+			</tr>
+		</thead>
+	</table>
+	
+
   	<H2><a id="logout" title="Log out" href="logout.do?method=logout">Log out</a></H2>
 
     <form action="/EmployeeManagement/EmployeeServlet/action.do?method=addEmployee" method="post">

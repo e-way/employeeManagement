@@ -12,9 +12,14 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+
 import org.junit.runner.Request;
 
 import com.yy.EmployeeManagement.Domain.Employee;
+import com.yy.EmployeeManagement.Domain.PagedEmployees;
 import com.yy.EmployeeManagement.Domain.Pagination;
 import com.yy.EmployeeManagement.Service.EmployeeService;
 import com.yy.EmployeeManagement.Service.EmployeeServiceException;
@@ -92,22 +97,23 @@ public class EmployeeServlet extends HttpServlet {
 
 	private void paginate(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		String currentPageNumber = request.getParameter("currentPageNumber");
-		if (currentPageNumber == null) {
-			currentPageNumber = "1";
-		}
+		String page = request.getParameter("page");
+	
 		EmployeeService service = new EmployeeService();
-		Pagination pagenation = service.paginate(Integer.valueOf(currentPageNumber));
-		request.setAttribute("pagination", pagenation);
-
-		if (request.getSession().getAttribute("loginUser").equals("user")) {
-			request.getRequestDispatcher("/userMain.jsp").forward(request, response);
-			return;
-		}
-		if (request.getSession().getAttribute("loginUser").equals("admin")) {
-			request.getRequestDispatcher("/adminMain.jsp").forward(request, response);
-			return;
-		}
+		Pagination pagination = service.paginate(Integer.valueOf(page));
+		
+		response.getWriter().write(getJsonEmployeeString(pagination));
+	}
+	
+	private String getJsonEmployeeString(Pagination pagination) throws JsonProcessingException
+	{
+		PagedEmployees employees = new PagedEmployees(pagination.getTotalRecords(), pagination.getEmployeeList());
+		ObjectMapper mapper = new ObjectMapper();
+		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+		mapper.setDateFormat(dateFormat);
+		String employeeJson = mapper.writeValueAsString(employees);
+		
+		return employeeJson;
 	}
 
 	/**
@@ -128,12 +134,14 @@ public class EmployeeServlet extends HttpServlet {
 		if (role.equals("role_user")) {
 			request.setAttribute("message", "login as user.");
 			request.getSession().setAttribute("loginUser", "user");
-			response.sendRedirect(request.getContextPath() + "/main.do?method=paginate");
+//			response.sendRedirect(request.getContextPath() + "/main.do?method=paginate");
+			response.sendRedirect(request.getContextPath() + "/userMain.jsp");
 			return;
 		}
 		if (role.equals("role_admin")) {
 			request.getSession().setAttribute("loginUser", "admin");
-			response.sendRedirect("/EmployeeManagement/main.do?method=paginate");
+//			response.sendRedirect("/EmployeeManagement/main.do?method=paginate");
+			response.sendRedirect(request.getContextPath() + "/adminMain.jsp");
 			return;
 		}
 		if (role.equals("not_allowed")) {
