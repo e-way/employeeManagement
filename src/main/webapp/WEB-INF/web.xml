@@ -1,15 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- This web.xml file is not required when using Servlet 3.0 container,
-     see implementation details http://jersey.java.net/nonav/documentation/latest/jax-rs.html -->
-<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
-  <servlet>
-    <description></description>
-    <display-name>EmployeeServlet</display-name>
-    <servlet-name>EmployeeServlet</servlet-name>
-    <servlet-class>com.yy.EmployeeManagement.Controller.EmployeeServlet</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>EmployeeServlet</servlet-name>
-    <url-pattern>/EmployeeServlet</url-pattern>
-  </servlet-mapping>
+<!-- This web.xml file is not required when using Servlet 3.0 container, 
+	see implementation details http://jersey.java.net/nonav/documentation/latest/jax-rs.html -->
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://java.sun.com/xml/ns/javaee"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	version="2.5">
+	<servlet>
+		<description></description>
+		<display-name>EmployeeServlet</display-name>
+		<servlet-name>EmployeeServlet</servlet-name>
+		<servlet-class>com.yy.EmployeeManagement.Controller.EmployeeServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>EmployeeServlet</servlet-name>
+		<url-pattern>/EmployeeServlet</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>EmployeeServlet</servlet-name>
+		<url-pattern>*.do</url-pattern>
+	</servlet-mapping>
 </web-app>

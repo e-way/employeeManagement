@@ -69,6 +69,7 @@ public class Validator {
 		{
 			return false;
 		}
+		
 		Pattern pattern = Pattern.compile("^A0\\d{7}");
 		Matcher isValidId = pattern.matcher(id);
 		if (!isValidId.matches())

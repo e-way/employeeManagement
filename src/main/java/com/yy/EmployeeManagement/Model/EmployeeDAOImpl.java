@@ -19,8 +19,8 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 			e.printStackTrace();
 		}
 	}
-	private static String connectionUrl = "jdbc:sqlserver://Beangrinder.bcit.ca:1433;databaseName=jspweb;user=javastudent;password=compjava";
-
+	//private static String connectionUrl = "jdbc:sqlserver://Beangrinder.bcit.ca:1433;databaseName=jspweb;user=javastudent;password=compjava";
+	private static String connectionUrl = "jdbc:sqlserver://DESKTOP-V4UNJHJ:1433;databaseName=jspweb;user=sa;password=sa";
 	@Override
 	public List<Employee> getAllEmployees() {
 		List<Employee> allEmployees = new ArrayList<Employee>();
