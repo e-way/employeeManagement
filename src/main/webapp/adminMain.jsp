@@ -20,9 +20,9 @@
 		<thead>
 			<tr>
 				<th field="id" width="80">ID</th>
-				<th field="firstName" width="120">FirstName</th>
+				<th field="firstName" width="120" sortable="true">FirstName</th>
 				<th field="lastName" width="80" align="right">LastName</th>
-				<th field="dob" width="80" align="right">DOB</th>
+				<th field="dob" width="80" align="right" sortable="true">DOB</th>
 			</tr>
 		</thead>
 	</table>

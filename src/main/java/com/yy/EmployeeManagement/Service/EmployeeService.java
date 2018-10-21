@@ -51,9 +51,11 @@ public class EmployeeService {
 		employeeDAO.deleteEmployee(employeeId);
 	}
 
-	public Pagination paginate(int currentPageNumber) {
+	public Pagination paginate(int currentPageNumber, String sortItemName, String order) {
 		Pagination page = new Pagination();
 
+		page.setSortItemName(sortItemName);
+		page.setOrder(order);
 		page.setCurrentPageNumber(currentPageNumber);
 
 		int totalRecords = employeeDAO.getEmployeesTotal();
@@ -62,7 +64,7 @@ public class EmployeeService {
 		int recordsPerPage = page.getRecordsPerPage();
 		int startRowNumber = (page.getCurrentPageNumber() - 1) * recordsPerPage;
 
-		List<Employee> employeeList = employeeDAO.getPagedEmployees(startRowNumber, recordsPerPage);
+		List<Employee> employeeList = employeeDAO.getPagedEmployees(startRowNumber, recordsPerPage , sortItemName, order);
 		page.setEmployeeList(employeeList);
 
 		return page;

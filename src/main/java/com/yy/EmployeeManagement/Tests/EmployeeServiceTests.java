@@ -86,7 +86,7 @@ public class EmployeeServiceTests {
 		int totalPages = ((total % rowsPerPage)==0?(total/rowsPerPage):((total/rowsPerPage) + 1));
 		
 		int currentPageNumber = 1;
-		Pagination page = _service.paginate(currentPageNumber);
+		Pagination page = _service.paginate(currentPageNumber, "firstName", "desc");
 		
 		Assert.assertEquals(totalPages, page.getTotalPages());
 		Assert.assertEquals(currentPageNumber, page.getCurrentPageNumber());

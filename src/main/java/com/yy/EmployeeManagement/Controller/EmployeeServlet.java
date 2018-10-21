@@ -35,7 +35,6 @@ public class EmployeeServlet extends HttpServlet {
 	 */
 	public EmployeeServlet() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	/**
@@ -97,10 +96,15 @@ public class EmployeeServlet extends HttpServlet {
 
 	private void paginate(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		
+		String sort = request.getParameter("sort");
+		String order = request.getParameter("order");
+		
+		
 		String page = request.getParameter("page");
 	
 		EmployeeService service = new EmployeeService();
-		Pagination pagination = service.paginate(Integer.valueOf(page));
+		Pagination pagination = service.paginate(Integer.valueOf(page), sort, order);
 		
 		response.getWriter().write(getJsonEmployeeString(pagination));
 	}
@@ -134,13 +138,11 @@ public class EmployeeServlet extends HttpServlet {
 		if (role.equals("role_user")) {
 			request.setAttribute("message", "login as user.");
 			request.getSession().setAttribute("loginUser", "user");
-//			response.sendRedirect(request.getContextPath() + "/main.do?method=paginate");
 			response.sendRedirect(request.getContextPath() + "/userMain.jsp");
 			return;
 		}
 		if (role.equals("role_admin")) {
 			request.getSession().setAttribute("loginUser", "admin");
-//			response.sendRedirect("/EmployeeManagement/main.do?method=paginate");
 			response.sendRedirect(request.getContextPath() + "/adminMain.jsp");
 			return;
 		}

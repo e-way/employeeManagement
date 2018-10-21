@@ -9,6 +9,9 @@ public class Pagination {
 	private int totalPages;
 	private int currentPageNumber = 1;
 	private List<Employee> employeeList = new ArrayList<Employee>();
+	
+	private String sortItemName;
+	private String order;
 
 	public Pagination() {
 	}
@@ -24,6 +27,22 @@ public class Pagination {
 		} else {
 			this.totalPages = this.totalRecords / this.recordsPerPage + 1;
 		}
+	}
+
+	public String getSortItemName() {
+		return sortItemName;
+	}
+
+	public void setSortItemName(String sortItemName) {
+		this.sortItemName = sortItemName;
+	}
+
+	public String getOrder() {
+		return order;
+	}
+
+	public void setOrder(String order) {
+		this.order = order;
 	}
 
 	public int getTotalPages() {

@@ -165,4 +165,38 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 		return allEmployees;
 
 	}
+
+	@Override
+	public List<Employee> getPagedEmployees(int startRows, int recordsPerPage, String sortItemName, String order) {
+		
+		List<Employee> allEmployees = new ArrayList<Employee>();
+		//set default order to desc.
+		String orderBy = sortItemName == null ? "" : "ORDER BY " + sortItemName + " ";
+		String orderDescription = order == null ? "" : order;
+		try {
+			try (Connection connection = DriverManager.getConnection(connectionUrl)) {
+				String sql = new StringBuilder().append(
+						"SELECT id, firstName, lastName, dob FROM (SELECT ROW_NUMBER() OVER (ORDER BY id DESC) as rn, * from dbo.A00911103_Employees) as x ")
+						.append("WHERE rn BETWEEN ? and ? ")
+						.append(orderBy)
+						.append(orderDescription)
+						.toString();
+				try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+					preparedStatement.setInt(1, startRows + 1);
+					preparedStatement.setInt(2, startRows + recordsPerPage);
+					
+					try (ResultSet resultSet = preparedStatement.executeQuery()) {
+						while (resultSet.next()) {
+							allEmployees.add(new Employee(resultSet.getString(1), resultSet.getString(2),
+									resultSet.getString(3), resultSet.getDate(4)));
+						}
+					}
+
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return allEmployees;
+	}
 }

@@ -17,4 +17,6 @@ public interface EmployeeDAO {
 	public int getEmployeesTotal();
 	
 	public List<Employee>getPagedEmployees(int startRows, int recordsPerPage);
+	
+	public List<Employee>getPagedEmployees(int startRows, int recordsPerPage, String sortItemName, String order);
 }
