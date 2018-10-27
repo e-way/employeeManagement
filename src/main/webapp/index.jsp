@@ -1,28 +1,53 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="UTF-8">
-	<title>Login</title>
-	<link rel="stylesheet" type="text/css" href="jquery-easyui-1.6.6/themes/default/easyui.css">
-	<link rel="stylesheet" type="text/css" href="jquery-easyui-1.6.6/themes/icon.css">
-	<link rel="stylesheet" type="text/css" href="jquery-easyui-1.6.6/demo.css">
-	<script type="text/javascript" src="jquery-easyui-1.6.6/jquery.min.js"></script>
-	<script type="text/javascript" src="jquery-easyui-1.6.6/jquery.easyui.min.js"></script>
+<meta charset="UTF-8">
+<title>Login</title>
+<link rel="stylesheet" type="text/css"
+	href="jquery-easyui-1.6.6/themes/default/easyui.css">
+<link rel="stylesheet" type="text/css"
+	href="jquery-easyui-1.6.6/themes/icon.css">
+<script type="text/javascript" src="jquery-easyui-1.6.6/jquery.min.js"></script>
+<script type="text/javascript"
+	src="jquery-easyui-1.6.6/jquery.easyui.min.js"></script>
 </head>
 
 <body>
-	<div id="win" class="easyui-window" title="Login" style="width: 400px; height: 280px;">
-		<form id="loginForm" action="/EmployeeManagement/EmployeeServlet?method=login" method="post" style="padding: 10px 20px 10px 40px;">
-			<p>
-				UserName: <input type="text" name="username">
-			</p>
-			<p>
-				Password: <input type="password" name="password">
-			</p>
-			<p>
-			    <input type="submit" value="Submit">
-			</p>
-		</form>
+	<div class="easyui-layout" fit="true">
+		
+			<div data-options="region:'center',title:'West',split:true" style="width: 70%;">
+			    <div class="easyui-layout" fit="true">
+			    	<div data-options="region:'North',title:'Sign Off',split:true" style="width: 100%;">
+			    	   <jsp:include page="/Employees.jsp" flush="true" />
+			    	</div>
+			        
+			    	<div data-options="region:'South',title:'Sign Off',split:true" style="width: 100%;">
+						<jsp:include page="/Logout.jsp" flush="true" />
+					</div>
+			    </div>
+			</div>
+			
+       <div data-options="region:'east',title:'east',split:true" style="width: 30%; height:auto">
+           <div class="easyui-layout" fit="true">
+			 <div data-options="region:'center',split:true" style="width: 100%; height: auto">
+				<div data-options="region:'north',title:'Add Employees',split:true" style="height: auto;">
+					<jsp:include page="/addEmployees.jsp" flush="true" />
+				</div>
+				<div
+					data-options="region:'center',title:'Find an Employee By ID',split:true"
+					style="height: auto;">
+					<jsp:include page="/findEmployees.jsp" flush="true" />
+				</div>
+				<div
+					data-options="region:'south',title:'Remove an Employee',split:true"
+					style="height: auto;">
+					<jsp:include page="/deleteEmployee.jsp" flush="true" />
+				</div>
+		   </div>
+		</div>
+       </div>
+		
+
 	</div>
 </body>
 </html>
