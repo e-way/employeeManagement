@@ -27,13 +27,12 @@ public class EmployeeService {
 	public void AddEmployee(Employee employee) throws Exception {
 		if (Validator.isValidEmployee(employee)) {
 			if (employeeDAO.findEmployeeByID(employee.getID()) != null) {
-				throw new EmployeeServiceException(
-						"Result Code:502 Description: ID already exists for another employee.");
+				throw new IdAlreadyExistException("");
 			} else {
 				employeeDAO.addEmployee(employee);
 			}
 		} else {
-			throw new EmployeeServiceException("Result Code:901 Description: invalid employee data!");
+			throw new InvalidEmployeeDataException("");
 		}
 	}
 
@@ -64,7 +63,8 @@ public class EmployeeService {
 		int recordsPerPage = page.getRecordsPerPage();
 		int startRowNumber = (page.getCurrentPageNumber() - 1) * recordsPerPage;
 
-		List<Employee> employeeList = employeeDAO.getPagedEmployees(startRowNumber, recordsPerPage , sortItemName, order);
+		List<Employee> employeeList = employeeDAO.getPagedEmployees(startRowNumber, recordsPerPage, sortItemName,
+				order);
 		page.setEmployeeList(employeeList);
 
 		return page;
