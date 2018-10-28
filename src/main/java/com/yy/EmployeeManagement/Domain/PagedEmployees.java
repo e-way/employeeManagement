@@ -1,7 +1,11 @@
 package com.yy.EmployeeManagement.Domain;
 
 import java.util.List;
-
+/**
+ * 
+ * Serialize employees to easy UI.
+ *
+ */
 public class PagedEmployees {
 	public int total;
 	public List<Employee> rows;

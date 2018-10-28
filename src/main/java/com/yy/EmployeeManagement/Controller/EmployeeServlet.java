@@ -3,6 +3,7 @@ package com.yy.EmployeeManagement.Controller;
 import java.io.IOException;
 import java.sql.Date;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 import javax.servlet.ServletException;
@@ -11,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationConfig;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yy.EmployeeManagement.Domain.Employee;
 import com.yy.EmployeeManagement.Domain.PagedEmployees;
@@ -116,7 +118,7 @@ public class EmployeeServlet extends HttpServlet {
 		String dob = request.getParameter("dob");
 
 		try {
-			Employee employee = new Employee(id, firstName, lastName, Date.valueOf(dob));
+			Employee employee = new Employee(id, firstName, lastName, getSqlDate(dob));
 			service.AddEmployee(employee);
 			AddEmployeeResponse(request, Constants.STATUS_CODE_ADD_SUCCESS, "Success");
 
@@ -132,6 +134,14 @@ public class EmployeeServlet extends HttpServlet {
 
 		response.sendRedirect(request.getContextPath() + "/index.jsp");
 	}
+	
+	private static java.sql.Date getSqlDate(String dateString) throws ParseException
+	{
+		SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
+		java.util.Date date = format.parse(dateString);
+		return new java.sql.Date(date.getTime());
+	}
+	
 
 	private void findEmployeeResponse(HttpServletRequest request, String findResult, String code, String description) {
 		request.getSession().setAttribute("findName", findResult);
@@ -170,9 +180,9 @@ public class EmployeeServlet extends HttpServlet {
 
 	private String getJsonEmployeeString(Pagination pagination) throws JsonProcessingException {
 		PagedEmployees employees = new PagedEmployees(pagination.getTotalRecords(), pagination.getEmployeeList());
+	
 		ObjectMapper mapper = new ObjectMapper();
-		DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
-		mapper.setDateFormat(dateFormat);
+		mapper.setDateFormat(new SimpleDateFormat("yyyy/MM/dd"));
 		String employeeJson = mapper.writeValueAsString(employees);
 
 		return employeeJson;

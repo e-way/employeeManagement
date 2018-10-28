@@ -4,6 +4,8 @@ import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 public class Employee {
 	private String ID;
 	private String firstName;
@@ -35,6 +37,8 @@ public class Employee {
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
 	}
+	
+	@JsonSerialize(using=JsonDateSerializer.class)
 	public Date getDOB() {
 		return DOB;
 	}
