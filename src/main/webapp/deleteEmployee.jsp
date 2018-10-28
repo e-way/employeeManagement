@@ -3,7 +3,7 @@
 		<div style="margin-bottom: 20px">
 			<input class="easyui-textbox" name="id" style="width: 100%" data-options="label:'ID:',required:true">
 		</div>
-		<div>
+		<div align="right">
 			<input type="submit" value="Remove Employee" />
 		</div>
 	</form>
