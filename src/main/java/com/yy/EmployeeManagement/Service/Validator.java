@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 import com.yy.EmployeeManagement.Domain.Employee;
 
 public class Validator {
-	
+
 	public static boolean isUserRole(String userName, String password) {
 		if (userName != null && userName.equals("user") && password.equals("user")) {
 			return true;
@@ -23,57 +23,45 @@ public class Validator {
 			return false;
 		}
 	}
-	
-	public static boolean isValidEmployee(Employee employee)
-	{
-		if (employee == null)
-		{
+
+	public static boolean isValidEmployee(Employee employee) {
+		if (employee == null) {
 			return false;
 		}
-		if (!isValidName(employee.getFirstName()) || !isValidName(employee.getLastName()))
-		{
+		if (!isValidName(employee.getFirstName()) || !isValidName(employee.getLastName())) {
 			return false;
 		}
-		if (!withValidDOB(employee))
-		{
+		if (!withValidDOB(employee)) {
 			return false;
 		}
-		if (!isValidID(employee.getID()))
-		{
+		if (!isValidID(employee.getID())) {
 			return false;
 		}
 		return true;
 	}
-	
-	private static boolean isValidName(String name)
-	{
-		if (name == null ||name.isEmpty())
-		{
+
+	private static boolean isValidName(String name) {
+		if (name == null || name.isEmpty()) {
 			return false;
 		}
 		return true;
 	}
-	
-	private static boolean withValidDOB(Employee employee)
-	{
-		if (employee.getDOB()==null || !(employee.getDOB() instanceof Date))
-		{
+
+	private static boolean withValidDOB(Employee employee) {
+		if (employee.getDOB() == null || !(employee.getDOB() instanceof Date)) {
 			return false;
 		}
 		return true;
 	}
-	
-	public static boolean isValidID(String id)
-	{
-		if (id==null || id.isEmpty())
-		{
+
+	public static boolean isValidID(String id) {
+		if (id == null || id.isEmpty()) {
 			return false;
 		}
-		
+
 		Pattern pattern = Pattern.compile("^A0\\d{7}");
 		Matcher isValidId = pattern.matcher(id);
-		if (!isValidId.matches())
-		{
+		if (!isValidId.matches()) {
 			return false;
 		}
 		return true;

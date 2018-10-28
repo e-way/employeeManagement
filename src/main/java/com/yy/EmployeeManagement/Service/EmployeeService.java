@@ -10,16 +10,6 @@ import com.yy.EmployeeManagement.Model.EmployeeDAO;
 public class EmployeeService {
 	private final EmployeeDAO employeeDAO = DaoFactory.getDaoFactory().getEmployeeDao();
 
-	public String LoginAsRole(String userName, String password) {
-		if (Validator.isUserRole(userName, password)) {
-			return "role_user";
-		} else if (Validator.isAdminRole(userName, password)) {
-			return "role_admin";
-		} else {
-			return "not_allowed";
-		}
-	}
-
 	public List<Employee> ListEmployees() {
 		return employeeDAO.getAllEmployees();
 	}

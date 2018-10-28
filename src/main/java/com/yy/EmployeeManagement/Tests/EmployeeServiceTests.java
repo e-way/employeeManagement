@@ -94,18 +94,18 @@ public class EmployeeServiceTests {
 		Assert.assertEquals(rowsPerPage, page.getEmployeeList().size());
 	}
 	
-	@Test
-	public void loginRole()
-	{
-		String userRole = _service.LoginAsRole("user", "user");
-		Assert.assertEquals("role_user", userRole);
-		
-		String adminRole = _service.LoginAsRole("admin", "admin");
-		Assert.assertEquals("role_admin", adminRole);
-		
-		String notAllowed = _service.LoginAsRole("other", "anyone");
-		Assert.assertEquals("not_allowed", notAllowed);
-	}
+//	@Test
+//	public void loginRole()
+//	{
+//		String userRole = _service.LoginAsRole("user", "user");
+//		Assert.assertEquals("role_user", userRole);
+//		
+//		String adminRole = _service.LoginAsRole("admin", "admin");
+//		Assert.assertEquals("role_admin", adminRole);
+//		
+//		String notAllowed = _service.LoginAsRole("other", "anyone");
+//		Assert.assertEquals("not_allowed", notAllowed);
+//	}
 	
 	@After
 	public void teardown() throws Exception

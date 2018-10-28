@@ -4,20 +4,14 @@ import java.io.IOException;
 import java.sql.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Locale;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import org.junit.runner.Request;
-
 import com.yy.EmployeeManagement.Domain.Employee;
 import com.yy.EmployeeManagement.Domain.PagedEmployees;
 import com.yy.EmployeeManagement.Domain.Pagination;
@@ -25,13 +19,18 @@ import com.yy.EmployeeManagement.Service.EmployeeService;
 import com.yy.EmployeeManagement.Service.EmployeeServiceException;
 import com.yy.EmployeeManagement.Service.IdAlreadyExistException;
 import com.yy.EmployeeManagement.Service.InvalidEmployeeDataException;
-import com.yy.EmployeeManagement.Service.ResultResponse;
 
 /**
  * Servlet implementation class EmployeeServlet
  */
 public class EmployeeServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+	private EmployeeService service;
+	
+	public void init()
+	{
+		service = new EmployeeService();
+	}
 
 	/**
 	 * @see HttpServlet#HttpServlet()
@@ -47,35 +46,29 @@ public class EmployeeServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
-		boolean isUserRole = request.isUserInRole("user");
-		boolean isAdminRole = request.isUserInRole("admin");
-
-		String method = request.getParameter("method");
+		String method = request.getParameter(Constants.METHOD);
 		if (method != null) {
-//			if (method.equals("login")) {
-//				login(request, response);
-//			}
-			if (method.equals("paginate")) {
+			if (method.equals(Constants.PAGINATE)) {
 				paginate(request, response);
 			}
-			if (method.equals("logout")) {
+			if (method.equals(Constants.LOG_OUT)) {
 				logout(request, response);
 			}
-			if (method.equals("addEmployee")) {
+			if (method.equals(Constants.ADD_EMPLOYEE)) {
 				try {
 					addEmployee(request, response);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
-			if (method.equals("removeEmployee")) {
+			if (method.equals(Constants.REMOVE_EMPLOYEE)) {
 				try {
 					removeEmployee(request, response);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
-			if (method.equals("findEmployee")) {
+			if (method.equals(Constants.FIND_EMPLOYEE)) {
 				try {
 					findEmployeeBy(request, response);
 				} catch (Exception e) {
@@ -86,90 +79,76 @@ public class EmployeeServlet extends HttpServlet {
 	}
 
 	private void findEmployeeBy(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		EmployeeService service = new EmployeeService();
 		String id = request.getParameter("id");
-		try
-		{
+		try {
 			Employee employee = service.FindEmployee(id);
-			if (employee != null)
-			{
-				request.getSession().setAttribute("findName", employee.getLastName() +" "+ employee.getFirstName());
-				findEmployeeResponse(request, "000", "Success.");
+			if (employee != null) {
+				findEmployeeResponse(request, employee.getLastName() + " " + employee.getFirstName(), Constants.STATUS_CODE_FIND_SUCCESS,
+						"Success.");
+			} else {
+				findEmployeeResponse(request, null, Constants.STATUS_CODE_NO_MATCH_FOUND, "No match found");
 			}
-			else
-			{
-				findEmployeeResponse(request, "801", "No match found");
-			}
-		}catch(Exception e)
-		{
-			findEmployeeResponse(request, "801", "No match found");
+		} catch (Exception e) {
+			findEmployeeResponse(request, null, Constants.STATUS_CODE_NO_MATCH_FOUND, "No match found");
 		}
-		
+
 		response.sendRedirect(request.getContextPath() + "/index.jsp");
 	}
 
 	private void removeEmployee(HttpServletRequest request, HttpServletResponse response)
 			throws EmployeeServiceException, Exception {
-		EmployeeService service = new EmployeeService();
 		String id = request.getParameter("id");
 
-		try
-		{
+		try {
 			service.DeleteEmployee(id);
-			removeEmployeeResponse(request, "001", "Deleted Successfully");
-		}catch(Exception e)
-		{
-			removeEmployeeResponse(request, "902", "Deleted UnSuccessful");
+			removeEmployeeResponse(request, Constants.STATUS_CODE_DELETE_SUCCESS, "Deleted Successfully");
+		} catch (Exception e) {
+			removeEmployeeResponse(request, Constants.STATUS_CODE_DELETE_UNSUCCESS, "Deleted UnSuccessful");
 		}
-		
+
 		response.sendRedirect(request.getContextPath() + "/index.jsp");
 	}
-	
-	
+
 	private void addEmployee(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		EmployeeService service = new EmployeeService();
 		String id = request.getParameter("id");
 		String firstName = request.getParameter("firstName");
 		String lastName = request.getParameter("lastName");
 		String dob = request.getParameter("dob");
-		
+
 		try {
 			Employee employee = new Employee(id, firstName, lastName, Date.valueOf(dob));
 			service.AddEmployee(employee);
-			AddEmployeeResponse(request, "200", "Success");
-			
+			AddEmployeeResponse(request, Constants.STATUS_CODE_ADD_SUCCESS, "Success");
+
 		} catch (IdAlreadyExistException e1) {
 			request.getSession().setAttribute("addInfo", e1.getMessage());
 			AddEmployeeResponse(request, "502", "ID already exists for another employee.");
-			
+
 		} catch (InvalidEmployeeDataException e2) {
-			AddEmployeeResponse(request, "901", "Description: invalid employee data!");
+			AddEmployeeResponse(request, Constants.STATUS_CODE_INVALID_EMPLOYEE_DATA, "Description: invalid employee data!");
 		} catch (Exception e3) {
-			AddEmployeeResponse(request, "500", e3.toString());
+			AddEmployeeResponse(request, Constants.STATUS_CODE_OTHER_EXCEPTION, e3.toString());
 		}
 
 		response.sendRedirect(request.getContextPath() + "/index.jsp");
 	}
-	
-	private void findEmployeeResponse(HttpServletRequest request, String code, String description)
-	{
+
+	private void findEmployeeResponse(HttpServletRequest request, String findResult, String code, String description) {
+		request.getSession().setAttribute("findName", findResult);
 		addInfoToResponse(request, "find", code, description);
 	}
-	
-	private void removeEmployeeResponse(HttpServletRequest request, String code, String description)
-	{
+
+	private void removeEmployeeResponse(HttpServletRequest request, String code, String description) {
 		addInfoToResponse(request, "delete", code, description);
 	}
-	
-	private void AddEmployeeResponse(HttpServletRequest request, String code, String description)
-	{
+
+	private void AddEmployeeResponse(HttpServletRequest request, String code, String description) {
 		addInfoToResponse(request, "add", code, description);
 	}
-	
-	private void addInfoToResponse(HttpServletRequest request, String prefix,  String code, String description)
-	{
-		request.getSession().setAttribute(prefix+"ResponseCode", code);
-		request.getSession().setAttribute(prefix+"ResponseDescription", description);
+
+	private void addInfoToResponse(HttpServletRequest request, String prefix, String code, String description) {
+		request.getSession().setAttribute(prefix + "ResponseCode", code);
+		request.getSession().setAttribute(prefix + "ResponseDescription", description);
 	}
 
 	private void logout(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -180,12 +159,10 @@ public class EmployeeServlet extends HttpServlet {
 	private void paginate(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
-		String sort = request.getParameter("sort");
-		String order = request.getParameter("order");
+		String sort = request.getParameter(Constants.EASY_UI_SORT);
+		String order = request.getParameter(Constants.EASY_UI_ORDER);
+		String page = request.getParameter(Constants.EASY_UI_PAGE);
 
-		String page = request.getParameter("page");
-
-		EmployeeService service = new EmployeeService();
 		Pagination pagination = service.paginate(Integer.valueOf(page), sort, order);
 
 		response.getWriter().write(getJsonEmployeeString(pagination));
@@ -209,37 +186,4 @@ public class EmployeeServlet extends HttpServlet {
 			throws ServletException, IOException {
 		doGet(request, response);
 	}
-
-//	private void login(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-//		EmployeeService service = new EmployeeService();
-//		String userName = request.getParameter("username");
-//		String passWord = request.getParameter("password");
-//
-//		String role = service.LoginAsRole(userName, passWord);
-//		if (role.equals("role_user")) {
-//			request.setAttribute("message", "login as user.");
-//			request.getSession().setAttribute("loginUser", "user");
-//
-//			RequestDispatcher dispatcher = request.getRequestDispatcher("/Employees.jsp");
-//			dispatcher.include(request, response);
-//
-//			dispatcher = request.getRequestDispatcher("/Logout.jsp");
-//			dispatcher.include(request, response);
-//
-//			return;
-//		}
-//		if (role.equals("role_admin")) {
-//			request.getSession().setAttribute("loginUser", "admin");
-//
-//			RequestDispatcher dispatcher = request.getRequestDispatcher("/Employees.jsp");
-//			dispatcher.forward(request, response);
-//		
-//			return;
-//		}
-//		if (role.equals("not_allowed")) {
-//			request.setAttribute("message", "not allowed!");
-//			request.getRequestDispatcher("/message.jsp").forward(request, response);
-//			return;
-//		}
-//	}
 }
