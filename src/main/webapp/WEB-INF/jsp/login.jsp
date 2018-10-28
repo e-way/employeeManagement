@@ -10,18 +10,23 @@
 </head>
 
 <body>
-	<div id="win" class="easyui-window" title="Login" style="width: 400px; height: 280px;">
+<div>
+   <h1>Login</h1>
+   <h1>Sorry, you must log in before accessing this resource.</h1>
+</div>
+	<div id="win" class="easyui-dialog" title="Login" closable="false" shadow="false" draggable="false" style="width:300px;height:250px;padding:10px;">
 		<form id="loginForm" action="j_security_check" method="post" style="padding: 10px 20px 10px 40px;">
 			<p>
-				UserName: <input type="text" name="j_username">
+				 <input class="easyui-textbox" style="width: 100%" data-options="label:'UserName:',required:true" name="j_username">
 			</p>
 			<p>
-				Password: <input type="password" name="j_password">
+				 <input class="easyui-passwordbox" style="width: 100%" data-options="label:'Password:',required:true" name="j_password">
 			</p>
 			<p>
 			    <input name="login" type="submit" value="Submit">
 			</p>
 		</form>
 	</div>
+	
 </body>
 </html>

@@ -3,10 +3,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="ISO-8859-1">
-<title>Insert title here</title>
+<title>Login error.</title>
 </head>
 <body>
-
+ <p>Error occur when login.</p>
 </body>
 </html>

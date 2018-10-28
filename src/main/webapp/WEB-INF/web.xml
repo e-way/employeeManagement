@@ -12,6 +12,12 @@
     <servlet-name>EmployeeServlet</servlet-name>
     <url-pattern>/EmployeeServlet</url-pattern>
   </servlet-mapping>
+  
+  <servlet-mapping>
+    <servlet-name>EmployeeServlet</servlet-name>
+    <url-pattern>/A00911103</url-pattern>
+  </servlet-mapping>
+  
   <servlet-mapping>
     <servlet-name>EmployeeServlet</servlet-name>
     <url-pattern>*.do</url-pattern>

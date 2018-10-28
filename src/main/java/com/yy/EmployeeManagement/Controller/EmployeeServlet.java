@@ -52,9 +52,9 @@ public class EmployeeServlet extends HttpServlet {
 
 		String method = request.getParameter("method");
 		if (method != null) {
-			if (method.equals("login")) {
-				login(request, response);
-			}
+//			if (method.equals("login")) {
+//				login(request, response);
+//			}
 			if (method.equals("paginate")) {
 				paginate(request, response);
 			}
@@ -172,8 +172,9 @@ public class EmployeeServlet extends HttpServlet {
 		request.getSession().setAttribute(prefix+"ResponseDescription", description);
 	}
 
-	private void logout(HttpServletRequest request, HttpServletResponse response) {
+	private void logout(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		request.getSession().invalidate();
+		response.sendRedirect(request.getContextPath() + "/index.jsp");
 	}
 
 	private void paginate(HttpServletRequest request, HttpServletResponse response)
@@ -209,52 +210,36 @@ public class EmployeeServlet extends HttpServlet {
 		doGet(request, response);
 	}
 
-	private void login(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		EmployeeService service = new EmployeeService();
-		String userName = request.getParameter("username");
-		String passWord = request.getParameter("password");
-
-		String role = service.LoginAsRole(userName, passWord);
-		if (role.equals("role_user")) {
-			request.setAttribute("message", "login as user.");
-			request.getSession().setAttribute("loginUser", "user");
-
-			RequestDispatcher dispatcher = request.getRequestDispatcher("/Employees.jsp");
-			dispatcher.include(request, response);
-
-			dispatcher = request.getRequestDispatcher("/Logout.jsp");
-			dispatcher.include(request, response);
-
-			return;
-		}
-		if (role.equals("role_admin")) {
-			request.getSession().setAttribute("loginUser", "admin");
-
-			RequestDispatcher dispatcher = request.getRequestDispatcher("/Employees.jsp");
-			dispatcher.forward(request, response);
-			// dispatcher.include(request, response);
-
+//	private void login(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+//		EmployeeService service = new EmployeeService();
+//		String userName = request.getParameter("username");
+//		String passWord = request.getParameter("password");
+//
+//		String role = service.LoginAsRole(userName, passWord);
+//		if (role.equals("role_user")) {
+//			request.setAttribute("message", "login as user.");
+//			request.getSession().setAttribute("loginUser", "user");
+//
 //			RequestDispatcher dispatcher = request.getRequestDispatcher("/Employees.jsp");
 //			dispatcher.include(request, response);
-
+//
 //			dispatcher = request.getRequestDispatcher("/Logout.jsp");
 //			dispatcher.include(request, response);
 //
-//			dispatcher = getServletContext().getRequestDispatcher("/addEmployees.jsp");
-//			dispatcher.include(request, response);
+//			return;
+//		}
+//		if (role.equals("role_admin")) {
+//			request.getSession().setAttribute("loginUser", "admin");
 //
-//			dispatcher = getServletContext().getRequestDispatcher("/findEmployees.jsp");
-//			dispatcher.include(request, response);
-//
-//			dispatcher = getServletContext().getRequestDispatcher("/deleteEmployee.jsp");
-//			dispatcher.include(request, response);
-
-			return;
-		}
-		if (role.equals("not_allowed")) {
-			request.setAttribute("message", "not allowed!");
-			request.getRequestDispatcher("/message.jsp").forward(request, response);
-			return;
-		}
-	}
+//			RequestDispatcher dispatcher = request.getRequestDispatcher("/Employees.jsp");
+//			dispatcher.forward(request, response);
+//		
+//			return;
+//		}
+//		if (role.equals("not_allowed")) {
+//			request.setAttribute("message", "not allowed!");
+//			request.getRequestDispatcher("/message.jsp").forward(request, response);
+//			return;
+//		}
+//	}
 }
