@@ -7,11 +7,7 @@
 			<input type="submit" value="Remove Employee" />
 		</div>
 	</form>
-	<% 
-	    String code = (String)request.getSession().getAttribute("deleteResponseCode"); 
-	    String description = (String)request.getSession().getAttribute("deleteResponseDescription");
-	%>
 	<div id="footerRemoveEmployee" style="padding:5px;">
-	      <p>Result Code:<%=code%> Description: <%=description%></p>
+	      <p>Result Code:${deleteResponseCode} Description: ${deleteResponseDescription}</p>
 	   </div>
 </div>

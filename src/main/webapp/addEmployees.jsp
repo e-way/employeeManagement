@@ -20,13 +20,10 @@
 				<input type="submit" value="Add Employee" />
 			</div>
 		</form>
-		<%
-	    String code = (String)request.getSession().getAttribute("addResponseCode"); 
-	    String description = (String)request.getSession().getAttribute("addResponseDescription");
-		%>
+		
 		
 		<div id="footerAddEmployee" style="padding:5px;">
-	      <p>Result Code:<%=code%> Description: <%=description%></p>
+	      <p>Result Code:${addResponseCode} Description: ${addResponseDescription}</p>
 	   </div>
 
 	</div>

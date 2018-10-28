@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<%@taglib uri='http://java.sun.com/jsp/jstl/core' prefix='c'%>
 <html>
 <head>
 <meta charset="UTF-8">
@@ -25,14 +25,14 @@
            <div class="easyui-layout" fit="true">
 			 <div data-options="region:'center',split:true" style="width: 100%; height: auto">
 			 
-			 <% if (request.isUserInRole("admin")) { %>
-			 <div data-options="region:'north',title:'Add Employees',split:true" style="height: auto;">
+			<c:if test="${pageContext.request.isUserInRole('admin')}">
+			 	<div data-options="region:'north',title:'Add Employees',split:true" style="height: auto;">
 					<jsp:include page="/addEmployees.jsp" flush="true" />
 				</div>
 				<div data-options="region:'south',title:'Remove an Employee',split:true" style="height: auto;">
 					<jsp:include page="/deleteEmployee.jsp" flush="true" />
 				</div>
-			 <%}%>
+			 </c:if>
 				<div data-options="region:'center',title:'Find an Employee By ID',split:true" style="height: auto;">
 					<jsp:include page="/findEmployees.jsp" flush="true" />
 				</div>

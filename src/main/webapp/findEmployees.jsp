@@ -7,13 +7,8 @@
 			<input type="submit" value="Search" />
 		</div>
 	</form>
-	<% 
-		String name = (String)request.getSession().getAttribute("findName");
-		String code = (String)request.getSession().getAttribute("findResponseCode");
-		String description = (String)request.getSession().getAttribute("findResponseDescription");
-	%>
 	<div id="footerFineEmployee" style="padding:5px;">
-		<p>Found <%=name%></p>
-		<p>Result Code:<%=code%> Description:<%=description%></p>  
+		<p>Found ${findName}</p>
+		<p>Result Code:${findResponseCode} Description:${findResponseDescription}</p>  
 	</div>
 </div>
