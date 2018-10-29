@@ -33,9 +33,12 @@ public class EmployeeService {
 		return employeeDAO.findEmployeeByID(employeeId);
 	}
 
-	public void DeleteEmployee(String employeeId) throws EmployeeServiceException {
+	public void DeleteEmployee(String employeeId) throws Exception {
 		if (!Validator.isValidID(employeeId)) {
-			throw new EmployeeServiceException("The employee Id is empty, please check.");
+			throw new EmployeeServiceException("The employee Id is inValid, please check.");
+		}
+		if (employeeDAO.findEmployeeByID(employeeId) == null) {
+			throw new EmployeeServiceException("The Id:"+employeeId+" you try to delete does not exists.");
 		}
 		employeeDAO.deleteEmployee(employeeId);
 	}

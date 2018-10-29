@@ -13,7 +13,7 @@
 			</div>
 			
 			<div style="margin-bottom: 20px">
-				<input class="easyui-textbox" name="dob" style="width: 100%" data-options="prompt:'YYYY/MM/DD',label:'DOB',required:true">
+				<input class="easyui-textbox" name="dob" style="width: 100%" data-options="prompt:'YYYY/MM/DD',label:'DOB',required:false">
 			</div>
 
 			<div align="right">

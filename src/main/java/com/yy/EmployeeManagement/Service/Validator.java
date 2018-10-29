@@ -1,6 +1,5 @@
 package com.yy.EmployeeManagement.Service;
 
-import java.sql.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -31,9 +30,6 @@ public class Validator {
 		if (!isValidName(employee.getFirstName()) || !isValidName(employee.getLastName())) {
 			return false;
 		}
-		if (!withValidDOB(employee)) {
-			return false;
-		}
 		if (!isValidID(employee.getID())) {
 			return false;
 		}
@@ -42,13 +38,6 @@ public class Validator {
 
 	private static boolean isValidName(String name) {
 		if (name == null || name.isEmpty()) {
-			return false;
-		}
-		return true;
-	}
-
-	private static boolean withValidDOB(Employee employee) {
-		if (employee.getDOB() == null || !(employee.getDOB() instanceof Date)) {
 			return false;
 		}
 		return true;

@@ -1,5 +1,6 @@
 package com.yy.EmployeeManagement.Model;
 
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -7,26 +8,42 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 import com.yy.EmployeeManagement.Domain.Employee;
 
 public class EmployeeDAOImpl implements EmployeeDAO {
 
+	private static String driver;
+	private static String connectionUrl;
+	private static String employeeTable;
+	static {
+		Properties props = new Properties();
+		InputStream is = EmployeeDAOImpl.class.getClassLoader().getResourceAsStream("db.properties");
+		try {
+			props.load(is);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		driver = props.getProperty("driver");
+		connectionUrl = props.getProperty("url");
+		employeeTable = props.getProperty("table");
+	}
+
 	static {
 		try {
-			Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+			Class.forName(driver);
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
 	}
-	//private static String connectionUrl = "jdbc:sqlserver://Beangrinder.bcit.ca:1433;databaseName=jspweb;user=javastudent;password=compjava";
-	private static String connectionUrl = "jdbc:sqlserver://DESKTOP-V4UNJHJ:1433;databaseName=jspweb;user=sa;password=sa";
+
 	@Override
 	public List<Employee> getAllEmployees() {
 		List<Employee> allEmployees = new ArrayList<Employee>();
 		try {
 			try (Connection connection = DriverManager.getConnection(connectionUrl)) {
-				String getAllEmployee = "SELECT id, firstName, lastName, dob FROM [DBO].[A00911103_EMPLOYEES]";
+				String getAllEmployee = "SELECT id, firstName, lastName, dob FROM " + employeeTable;
 				try (Statement statement = connection.createStatement();
 						ResultSet resultSet = statement.executeQuery(getAllEmployee)) {
 					while (resultSet.next()) {
@@ -47,7 +64,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 		try {
 			try (Connection connection = DriverManager.getConnection(connectionUrl)) {
 				String sql = new StringBuilder()
-						.append("INSERT INTO [DBO].[A00911103_EMPLOYEES]([ID],[firstName],[lastName],[dob])")
+						.append("INSERT INTO " + employeeTable + "([ID],[firstName],[lastName],[dob])")
 						.append("VALUES(?, ?, ?, ?);").toString();
 
 				try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
@@ -70,7 +87,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 		try {
 			try (Connection connection = DriverManager.getConnection(connectionUrl)) {
 				String sql = new StringBuilder()
-						.append("SELECT id, firstName, lastName, dob FROM [DBO].[A00911103_EMPLOYEES] WHERE")
+						.append("SELECT id, firstName, lastName, dob FROM " + employeeTable + " WHERE")
 						.append(" ID = ?").toString();
 				try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
 					preparedStatement.setString(1, id);
@@ -85,12 +102,11 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-        //not found employee.
-		if (employees.isEmpty())
-		{
+		// not found employee.
+		if (employees.isEmpty()) {
 			return null;
 		}
-		//found more than one records.
+		// found more than one records.
 		if (employees.size() != 1) {
 			throw new EmployeeCRUDException("Found unexpected results!");
 		}
@@ -101,8 +117,8 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 	public void deleteEmployee(String id) {
 		try {
 			try (Connection connection = DriverManager.getConnection(connectionUrl)) {
-				String sql = new StringBuilder().append("DELETE FROM [DBO].[A00911103_EMPLOYEES] WHERE")
-						.append(" ID = ?").toString();
+				String sql = new StringBuilder().append("DELETE FROM " + employeeTable + " WHERE").append(" ID = ?")
+						.toString();
 				try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
 					preparedStatement.setString(1, id);
 					int rowsAffected = preparedStatement.executeUpdate();
@@ -119,7 +135,7 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 		int total = 0;
 		try {
 			try (Connection connection = DriverManager.getConnection(connectionUrl)) {
-				String sql = "SELECT COUNT(*) FROM [DBO].[A00911103_EMPLOYEES]";
+				String sql = "SELECT COUNT(*) FROM " + employeeTable;
 				try (PreparedStatement preparedStatement = connection.prepareStatement(sql);
 						ResultSet resultSet = preparedStatement.executeQuery()) {
 					while (resultSet.next()) {
@@ -145,7 +161,8 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 		try {
 			try (Connection connection = DriverManager.getConnection(connectionUrl)) {
 				String sql = new StringBuilder().append(
-						"SELECT id, firstName, lastName, dob FROM (SELECT ROW_NUMBER() OVER (ORDER BY id DESC) as rn, * from dbo.A00911103_Employees) as x ")
+						"SELECT id, firstName, lastName, dob FROM (SELECT ROW_NUMBER() OVER (ORDER BY id DESC) as rn, * from "
+								+ employeeTable + ") as x ")
 						.append("WHERE rn BETWEEN ? and ?").toString();
 				try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
 					preparedStatement.setInt(1, startRows + 1);
@@ -168,23 +185,21 @@ public class EmployeeDAOImpl implements EmployeeDAO {
 
 	@Override
 	public List<Employee> getPagedEmployees(int startRows, int recordsPerPage, String sortItemName, String order) {
-		
+
 		List<Employee> allEmployees = new ArrayList<Employee>();
-		//set default order to desc.
+		// set default order to desc.
 		String orderBy = sortItemName == null ? "" : "ORDER BY " + sortItemName + " ";
 		String orderDescription = order == null ? "" : order;
 		try {
 			try (Connection connection = DriverManager.getConnection(connectionUrl)) {
 				String sql = new StringBuilder().append(
-						"SELECT id, firstName, lastName, dob FROM (SELECT ROW_NUMBER() OVER (ORDER BY id DESC) as rn, * from dbo.A00911103_Employees) as x ")
-						.append("WHERE rn BETWEEN ? and ? ")
-						.append(orderBy)
-						.append(orderDescription)
-						.toString();
+						"SELECT id, firstName, lastName, dob FROM (SELECT ROW_NUMBER() OVER (ORDER BY id DESC) as rn, * from "
+								+ employeeTable + ") as x ")
+						.append("WHERE rn BETWEEN ? and ? ").append(orderBy).append(orderDescription).toString();
 				try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
 					preparedStatement.setInt(1, startRows + 1);
 					preparedStatement.setInt(2, startRows + recordsPerPage);
-					
+
 					try (ResultSet resultSet = preparedStatement.executeQuery()) {
 						while (resultSet.next()) {
 							allEmployees.add(new Employee(resultSet.getString(1), resultSet.getString(2),

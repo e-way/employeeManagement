@@ -2,7 +2,6 @@ package com.yy.EmployeeManagement.Controller;
 
 import java.io.IOException;
 import java.sql.Date;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
@@ -12,7 +11,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.DeserializationConfig;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yy.EmployeeManagement.Domain.Employee;
 import com.yy.EmployeeManagement.Domain.PagedEmployees;
@@ -28,9 +26,8 @@ import com.yy.EmployeeManagement.Service.InvalidEmployeeDataException;
 public class EmployeeServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private EmployeeService service;
-	
-	public void init()
-	{
+
+	public void init() {
 		service = new EmployeeService();
 	}
 
@@ -85,8 +82,8 @@ public class EmployeeServlet extends HttpServlet {
 		try {
 			Employee employee = service.FindEmployee(id);
 			if (employee != null) {
-				findEmployeeResponse(request, employee.getLastName() + " " + employee.getFirstName(), Constants.STATUS_CODE_FIND_SUCCESS,
-						"Success.");
+				findEmployeeResponse(request, employee.getLastName() + " " + employee.getFirstName(),
+						Constants.STATUS_CODE_FIND_SUCCESS, "Success.");
 			} else {
 				findEmployeeResponse(request, null, Constants.STATUS_CODE_NO_MATCH_FOUND, "No match found");
 			}
@@ -104,21 +101,26 @@ public class EmployeeServlet extends HttpServlet {
 		try {
 			service.DeleteEmployee(id);
 			removeEmployeeResponse(request, Constants.STATUS_CODE_DELETE_SUCCESS, "Deleted Successfully");
-		} catch (Exception e) {
+		} catch (EmployeeServiceException e1) {
+			removeEmployeeResponse(request, Constants.STATUS_CODE_DELETE_UNSUCCESS, e1.getMessage());
+		}
+		catch (Exception e2) {
 			removeEmployeeResponse(request, Constants.STATUS_CODE_DELETE_UNSUCCESS, "Deleted UnSuccessful");
 		}
 
 		response.sendRedirect(request.getContextPath() + "/index.jsp");
 	}
 
-	private void addEmployee(HttpServletRequest request, HttpServletResponse response) throws IOException {
+	private void addEmployee(HttpServletRequest request, HttpServletResponse response)
+			throws IOException, ServletException, ParseException {
 		String id = request.getParameter("id");
 		String firstName = request.getParameter("firstName");
 		String lastName = request.getParameter("lastName");
 		String dob = request.getParameter("dob");
 
+		Date dobDate = (dob == null || "".equals(dob)) ? null : getSqlDate(dob);
 		try {
-			Employee employee = new Employee(id, firstName, lastName, getSqlDate(dob));
+			Employee employee = new Employee(id, firstName, lastName, dobDate);
 			service.AddEmployee(employee);
 			AddEmployeeResponse(request, Constants.STATUS_CODE_ADD_SUCCESS, "Success");
 
@@ -127,21 +129,20 @@ public class EmployeeServlet extends HttpServlet {
 			AddEmployeeResponse(request, "502", "ID already exists for another employee.");
 
 		} catch (InvalidEmployeeDataException e2) {
-			AddEmployeeResponse(request, Constants.STATUS_CODE_INVALID_EMPLOYEE_DATA, "Description: invalid employee data!");
+			AddEmployeeResponse(request, Constants.STATUS_CODE_INVALID_EMPLOYEE_DATA,
+					"Description: invalid employee data!");
 		} catch (Exception e3) {
 			AddEmployeeResponse(request, Constants.STATUS_CODE_OTHER_EXCEPTION, e3.toString());
 		}
 
 		response.sendRedirect(request.getContextPath() + "/index.jsp");
 	}
-	
-	private static java.sql.Date getSqlDate(String dateString) throws ParseException
-	{
+
+	private static java.sql.Date getSqlDate(String dateString) throws ParseException {
 		SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
 		java.util.Date date = format.parse(dateString);
 		return new java.sql.Date(date.getTime());
 	}
-	
 
 	private void findEmployeeResponse(HttpServletRequest request, String findResult, String code, String description) {
 		request.getSession().setAttribute("findName", findResult);
@@ -180,11 +181,9 @@ public class EmployeeServlet extends HttpServlet {
 
 	private String getJsonEmployeeString(Pagination pagination) throws JsonProcessingException {
 		PagedEmployees employees = new PagedEmployees(pagination.getTotalRecords(), pagination.getEmployeeList());
-	
-		ObjectMapper mapper = new ObjectMapper();
-		mapper.setDateFormat(new SimpleDateFormat("yyyy/MM/dd"));
-		String employeeJson = mapper.writeValueAsString(employees);
 
+		ObjectMapper mapper = new ObjectMapper();
+		String employeeJson = mapper.writeValueAsString(employees);
 		return employeeJson;
 	}
 
